@@ -30,6 +30,7 @@ type EnteringReaderMode struct {
 	Domain       string
 	Id           int
 	CommentCount int
+	Summarize    bool
 }
 
 type ShowStatusMessage struct {

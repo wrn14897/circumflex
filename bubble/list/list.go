@@ -552,7 +552,15 @@ func (m *Model) Update(msg tea.Msg) (*Model, tea.Cmd) {
 			return m, tea.Batch(cmds...)
 		}
 
-		article, err := reader.GetArticle(msg.Url, msg.Title, m.config.CommentWidth, m.config.IndentationSymbol)
+		var article string
+		var err error
+
+		if msg.Summarize {
+			article, err = reader.GetArticleWithSummary(msg.Url, msg.Title, m.config.CommentWidth, m.config.IndentationSymbol)
+		} else {
+			article, err = reader.GetArticle(msg.Url, msg.Title, m.config.CommentWidth, m.config.IndentationSymbol)
+		}
+
 		if err != nil {
 			cmds = append(cmds, m.NewStatusMessageWithDuration("Could not read article in Reader Mode", time.Second*3))
 			cmds = append(cmds, func() tea.Msg {
@@ -984,6 +992,22 @@ func (m *Model) handleBrowsing(msg tea.Msg) tea.Cmd {
 					Domain:       m.SelectedItem().Domain,
 					Id:           m.SelectedItem().ID,
 					CommentCount: m.SelectedItem().CommentsCount,
+					Summarize:    false,
+				}
+			}
+
+		case msg.String() == "a":
+			m.SetIsVisible(false)
+			m.SetDisabledInput(true)
+
+			return func() tea.Msg {
+				return message.EnteringReaderMode{
+					Url:          m.SelectedItem().URL,
+					Title:        m.SelectedItem().Title,
+					Domain:       m.SelectedItem().Domain,
+					Id:           m.SelectedItem().ID,
+					CommentCount: m.SelectedItem().CommentsCount,
+					Summarize:    true,
 				}
 			}
 		}
