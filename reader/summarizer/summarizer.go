@@ -24,7 +24,10 @@ func SummarizeArticle(articleContent string, articleURL string) (string, error) 
 	}
 
 	prompt := fmt.Sprintf(`Please provide a concise summary of the following article from %s.
-Focus on the main points and key takeaways. Format the summary in a clear, readable manner.
+Focus on the main points and key takeaways.
+
+Format your response as plain paragraphs with clear spacing. Do NOT use bullet points or complex markdown formatting.
+Use simple paragraphs separated by blank lines. Use **bold** for emphasis where appropriate.
 
 Article content:
 %s`, articleURL, articleContent)
